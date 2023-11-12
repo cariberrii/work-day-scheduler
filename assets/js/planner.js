@@ -4,21 +4,39 @@ console.log("This is planner.js");
 var dateToday = dayjs().format("dddd[,] MMMM D");
 $("#currentDay").text(dateToday);
 
-// Hours in the workday
-// var hours = [ "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm" ]
+ 
+// Limit rows of text to 3 within each hour input
+$('textarea[data-limit-rows=true]').on('keypress', function (event) {
+    var textarea = $(this),
+        numberOfLines = (textarea.val().match(/\n/g) || []).length + 1,
+        maxRows = parseInt(textarea.attr('rows'));
+    
+    if (event.which === 13 && numberOfLines === maxRows ) {
+      return false;
+    }
+  });
 
-// // Display schedule
-// var hoursIndex = 0;
-//     // loop through array of hours and display one input per hour
-// function displaySchedule () {
-//     var hour = hours[hoursIndex];
-//     var inputBlockEl = $(".input-hour");
-//     var hourDisplay = $(".time");
-//     hourDisplay.text = hour;
-//     // iterate over the hours array
-//     for (var i = 0; i < hours.length - 1; i++) {
-//     inputBlockEl.clone().insertAfter(inputBlockEl);
-//     }
-// }
+  
+  // Change color of hour block based on current time
+  function hourColor() {
+      var hour = parseInt(dayjs().format("H"));
+      console.log(hour);
+      
+      $(".input-hour").each(function() {
+          var currentHour = parseInt($(this).attr("id"));
+          
+        console.log(currentHour);
+        console.log(this);
 
-// displaySchedule();
+        if (currentHour > hour) {
+            $(this).children("textarea").addClass("future");
+        } else if (currentHour === hour) {
+            $(this).children("textarea").addClass("present");
+        } else {
+            $(this).children("textarea").addClass("past");
+        }
+    })
+};
+
+// Call function
+hourColor();
